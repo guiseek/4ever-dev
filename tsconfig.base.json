@@ -14,7 +14,9 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@4ever-dev/shared/util-three": ["libs/shared/util-three/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
