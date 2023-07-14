@@ -17,7 +17,12 @@
         "tsConfig": "apps/game/arachne/tsconfig.app.json",
         "assets": [
           "apps/game/arachne/src/favicon.ico",
-          "apps/game/arachne/src/assets"
+          "apps/game/arachne/src/assets",
+          {
+            "input": "assets",
+            "glob": "**/**.{js,wasm,glb}",
+            "output": "assets"
+          }
         ],
         "styles": ["apps/game/arachne/src/styles.scss"],
         "scripts": []

@@ -36,10 +36,6 @@ import { Dialog } from '@angular/cdk/dialog'
       deps: [Input, Loader],
     },
     {
-      provide: Bee,
-      deps: [Input, Loader],
-    },
-    {
       provide: Cityscape,
       deps: [Loader],
     },

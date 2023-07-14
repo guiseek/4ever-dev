@@ -1,7 +1,0 @@
-<p>{{ data.message }}</p>
-
-<menu #menu>
-  <li *ngFor="let option of data.options">
-    <button [value]="option" (click)="close(option)">{{ option.label }}</button>
-  </li>
-</menu>

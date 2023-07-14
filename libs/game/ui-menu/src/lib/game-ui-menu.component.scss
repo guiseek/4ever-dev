@@ -1,24 +1,24 @@
 :host {
+  --ui-menu-theme: var(--theme, hsl(180 100% 50%));
+  --ui-menu-theme-bg: var(--theme-bg, hsl(180 100% 50% / 25%));
+  --ui-menu-theme-bg-hover: var(--theme-bg-hover, hsl(180 100% 50% / 40%));
+  --ui-menu-theme-text: var(--theme-text, white);
+  --ui-menu-theme-shadow: var(--theme-shadow, hsl(180 100% 10% / 25%));
   --distance: 1px;
-  --theme: hsl(180 100% 50%);
-  --theme-bg: hsl(180 100% 50% / 25%);
-  --theme-bg-hover: hsl(180 100% 50% / 40%);
-  --theme-text: white;
-  --theme-shadow: hsl(180 100% 10% / 25%);
 
   --_max-rotateY: 10deg;
   --_max-rotateX: 15deg;
-  --_btn-bg: var(--theme-bg);
-  --_btn-bg-hover: var(--theme-bg-hover);
-  --_btn-text: var(--theme-text);
-  --_btn-text-shadow: var(--theme-shadow);
+  --_btn-bg: var(--ui-menu-theme-bg);
+  --_btn-bg-hover: var(--ui-menu-theme-bg-hover);
+  --_btn-text: var(--ui-menu-theme-text);
+  --_btn-text-shadow: var(--ui-menu-theme-shadow);
   --_bounce-ease: cubic-bezier(0.5, 1.75, 0.75, 1.25);
 
   display: block;
 
   font-size: min(5vmin, 3rem);
   font-family: Audiowide;
-  color: var(--theme-text);
+  color: var(--ui-menu-theme-text);
 
   > p {
     margin: 20px;
@@ -57,15 +57,18 @@
     }
 
     @media (prefers-color-scheme: dark) {
-      --theme: hsl(176, 100%, 50%);
-      --theme-bg: hsl(255 53% 71% / 25%);
-      --theme-bg-hover: hsl(255 53% 50% / 40%);
-      --theme-shadow: hsl(255 53% 10% / 25%);
+      --ui-menu-theme: var(--theme-dark, hsl(176, 100%, 50%));
+      --ui-menu-theme-bg: var(--theme-bg-dark, hsl(255 53% 71% / 25%));
+      --ui-menu-theme-bg-hover: var(
+        --theme-bg-hover-dark,
+        hsl(255 53% 50% / 40%)
+      );
+      --ui-menu-theme-shadow: var(--theme-shadow-dark, hsl(255 53% 10% / 25%));
     }
 
     @media (dynamic-range: high) {
       @supports (color: color(display-p3 0 0 0)) {
-        --theme: color(display-p3 0.4 0 0.9);
+        --ui-menu-theme: color(display-p3 0.4 0 0.9);
       }
     }
   }
@@ -137,7 +140,7 @@
       inset: 0;
 
       /* style the element for border accents */
-      border: 1px solid var(--theme);
+      border: 1px solid var(--ui-menu-theme);
       border-radius: 5px 20px;
 
       /* move in Z space with a multiplier */
@@ -157,7 +160,8 @@
 
       /* in dark mode, it glows! */
       @media (prefers-color-scheme: dark) {
-        box-shadow: 0 0 25px var(--theme), inset 0 0 25px var(--theme);
+        box-shadow: 0 0 25px var(--ui-menu-theme),
+          inset 0 0 25px var(--ui-menu-theme);
       }
     }
 

@@ -7,7 +7,7 @@ type ArachneAction = 'jumpAttack' | 'idle' | 'walk' | 'jumpStomp' | 'sideDodge'
 export class Arachne extends Entity implements Updatable {
   override name = 'arachne'
   order = 2
-  #speed = 1;
+  #speed = 1
 
   #mixer?: AnimationMixer
   #action?: Record<ArachneAction, AnimationAction>
@@ -17,6 +17,42 @@ export class Arachne extends Entity implements Updatable {
 
   constructor(private input: Input, private loader: Loader) {
     super()
+  }
+
+  initialize() {
+    if (this.initialized) return
+
+    this.loader.load('arachne.glb').then(({scene, animations}) => {
+      this.add(scene)
+
+      this.position.set(0, 0, 0)
+
+      this.#mixer = new AnimationMixer(scene)
+      const actions: AnimationAction[] = []
+
+      for (const animation of animations) {
+        actions.push(this.#mixer.clipAction(animation))
+      }
+
+      const [jumpAttack, idle, walk, jumpStomp, sideDodge] = actions
+      this.#action = {jumpAttack, idle, walk, jumpStomp, sideDodge}
+      this.#activateAction('idle', 1, 1)
+      this.#activateAction('walk', 1, 1)
+      this.#activateAction('sideDodge', 1, 1)
+      this.#activateAction('jumpAttack', 1, 1)
+
+      this.#playAction('idle')
+    })
+  }
+
+  update(timeStep: number, delta: number): void {
+    this.#handleInput(delta * this.#speed)
+
+    if (this.#mixer && delta) {
+      this.#mixer.update(delta * this.#speed)
+    }
+
+    this.#rotateSmoothly(Math.min(4 * timeStep, 1))
   }
 
   #handleInput(delta: number) {
@@ -58,17 +94,7 @@ export class Arachne extends Entity implements Updatable {
       this.#speed = 3
     } else {
       this.#speed = 1
-   }
-  }
-
-  update(timeStep: number, delta: number): void {
-    this.#handleInput(delta * this.#speed)
-
-    if (this.#mixer && delta) {
-      this.#mixer.update(delta * this.#speed)
     }
-
-    this.#rotateSmoothly(Math.min(4 * timeStep, 1))
   }
 
   #toNorth(speed: number) {
@@ -97,37 +123,8 @@ export class Arachne extends Entity implements Updatable {
     this.quaternion.copy(quaternion)
   }
 
-  initialize() {
-    if (this.initialized) return
-
-    this.loader.load('arachne.glb').then(({scene, animations}) => {
-      this.add(scene)
-
-      this.position.set(0, 0, 0)
-
-      this.#mixer = new AnimationMixer(scene)
-      const actions: AnimationAction[] = []
-
-      for (const animation of animations) {
-        actions.push(this.#mixer.clipAction(animation))
-      }
-
-      const [jumpAttack, idle, walk, jumpStomp, sideDodge] = actions
-      this.#action = {jumpAttack, idle, walk, jumpStomp, sideDodge}
-      this.#activateAction('idle', 1, 1)
-      this.#activateAction('walk', 1, 1)
-      this.#activateAction('sideDodge', 1, 1)
-      this.#activateAction('jumpAttack', 1, 1)
-
-      this.#playAction('idle')
-
-      this.position.set(0, 0, 0)
-    })
-  }
-
   #playAction(action: ArachneAction) {
     const act = this.#getAction(action)
-    // if (act && act.paused === false) return
     if (act) act.play()
   }
 

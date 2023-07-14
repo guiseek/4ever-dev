@@ -1,5 +1,9 @@
 import {Euler, Quaternion} from 'three'
-import {isMobile} from '../utilities'
+import {
+  getQuaternionFromOrientation,
+  interceptEvent,
+  isMobile,
+} from '../utilities'
 
 export class Input {
   readonly key = {
@@ -65,9 +69,13 @@ export class Input {
     onkeyup = this.#onKeyUpEvent
 
     if (isMobile() && DeviceOrientationEvent) {
-      const scale = 0.04
-      const euler = new Euler()
-      ondeviceorientation = this.#onDeviceOrientationEvent(euler, scale)
+      interceptEvent('deviceorientation', (event) => {
+        const [w, x, y, z] = getQuaternionFromOrientation(event)
+        this.deviceRotation.set(x, y, z, w)
+        for (const cb of this.#onRotation) {
+          cb(this.deviceRotation)
+        }
+      })
     }
   }
 
@@ -128,9 +136,12 @@ export class Input {
   }
 
   #onDeviceOrientationEvent = (euler: Euler, scale: number) => {
-    return ({beta: x, alpha: z, gamma: y}: DeviceOrientationEvent) => {
-      euler.set(x ?? 0 * scale, y ?? 0 * scale, z ?? 0 + scale, 'XYZ')
+    return ({beta, alpha, gamma}: DeviceOrientationEvent) => {
+      const betaRad = (beta ?? 0) * (Math.PI / 180)
+      const alphaRad = (alpha ?? 0) * (Math.PI / 180)
+      const gammaRad = (gamma ?? 0) * (Math.PI / 180)
 
+      euler.set(betaRad, gammaRad, alphaRad)
       this.deviceRotation.setFromEuler(euler)
 
       for (const cb of this.#onRotation) {
@@ -138,6 +149,17 @@ export class Input {
       }
     }
   }
+  // #onDeviceOrientationEvent = (euler: Euler, scale: number) => {
+  //   return ({beta: x, alpha: z, gamma: y}: DeviceOrientationEvent) => {
+  //     euler.set(x ?? 0 * scale, y ?? 0 * scale, z ?? 0 + scale, 'XYZ')
+
+  //     this.deviceRotation.setFromEuler(euler)
+
+  //     for (const cb of this.#onRotation) {
+  //       cb(this.deviceRotation)
+  //     }
+  //   }
+  // }
 
   #setCodeToKeyValue(code: string, value: number) {
     this.key[this.#formatKey(code)] = value

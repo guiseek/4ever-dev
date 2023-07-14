@@ -1,0 +1,82 @@
+type AudioFilePath = `${string}.${'mp3' | 'ogg' | 'wav'}`
+
+export class AudioControl {
+  #target = 1
+  #lastTarget = 1
+  #audioGain!: GainNode
+  #audioContext!: AudioContext
+  #audioSource?: AudioBufferSourceNode
+  #paused = false
+
+  get connected() {
+    return this.#audioSource?.context.state === 'running'
+  }
+
+  constructor() {}
+
+  connect(src: AudioFilePath) {
+    this.#target = 1
+    this.#audioContext = new AudioContext()
+    this.#audioGain = this.#audioContext.createGain()
+
+    this.#fetchBuffer(src)
+      .then(this.#decodeSource)
+      .then((source) => {
+        this.#audioSource = source
+        this.#audioSource.loop = true
+        this.#audioSource.connect(this.#audioGain)
+        this.#audioGain.connect(this.#audioContext.destination)
+        this.#audioSource.start()
+      })
+  }
+
+  setGain(value: number) {
+    this.#target = value
+  }
+
+  update() {
+    if (!this.#audioGain) return
+
+    if (this.#audioGain.gain.value <= this.#target) {
+      this.#audioGain.gain.value += 0.02
+    }
+
+    if (this.#audioGain.gain.value >= this.#target) {
+      this.#audioGain.gain.value -= 0.02
+    }
+
+    if (this.#audioSource) {
+      this.#audioSource.playbackRate.value = this.#audioGain.gain.value * 2
+    }
+  }
+
+  pause() {
+    this.#paused = true
+    this.#target = 0
+  }
+
+  unPause() {
+    this.#paused = false
+    this.#target = 1
+  }
+
+  destroy() {
+    if (this.#audioSource) {
+      this.#audioSource.stop()
+      this.#audioSource.disconnect()
+    }
+    this.#audioContext.close()
+  }
+
+  #decodeSource = async (buffer: ArrayBuffer) => {
+    return this.#audioContext.decodeAudioData(buffer).then((audioBuffer) => {
+      const audioSource = this.#audioContext.createBufferSource()
+      audioSource.buffer = audioBuffer
+      return audioSource
+    })
+  }
+
+  #fetchBuffer = async (url: string) => {
+    return fetch(url).then((response) => response.arrayBuffer())
+  }
+}

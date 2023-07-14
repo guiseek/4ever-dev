@@ -19,6 +19,7 @@
         "libs/game/models-character/src/index.ts"
       ],
       "@4ever-dev/game/ui-menu": ["libs/game/ui-menu/src/index.ts"],
+      "@4ever-dev/game/util-audio": ["libs/game/util-audio/src/index.ts"],
       "@4ever-dev/shared/util-three": ["libs/shared/util-three/src/index.ts"]
     }
   },

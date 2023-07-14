@@ -6,10 +6,7 @@ export class GameUiMenuService {
   constructor(private readonly dialog: Dialog) {}
 
   open<R extends GameUiMenuOption, D extends GameUiMenuData>(data: D) {
-    const ref = this.dialog.open<R, D>(GameUiMenuComponent, {
-      data,
-      disableClose: true,
-    })
-    return {ref, closed: ref.closed}
+    const config = {data, disableClose: true}
+    return this.dialog.open<R, D>(GameUiMenuComponent, config)
   }
 }
