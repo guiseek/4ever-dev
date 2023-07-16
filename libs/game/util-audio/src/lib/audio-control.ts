@@ -2,11 +2,9 @@ type AudioFilePath = `${string}.${'mp3' | 'ogg' | 'wav'}`
 
 export class AudioControl {
   #target = 1
-  #lastTarget = 1
   #audioGain!: GainNode
   #audioContext!: AudioContext
   #audioSource?: AudioBufferSourceNode
-  #paused = false
 
   get connected() {
     return this.#audioSource?.context.state === 'running'
@@ -51,12 +49,10 @@ export class AudioControl {
   }
 
   pause() {
-    this.#paused = true
     this.#target = 0
   }
 
   unPause() {
-    this.#paused = false
     this.#target = 1
   }
 
