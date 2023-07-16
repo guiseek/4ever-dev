@@ -1,1 +1,1 @@
-export * from './time-out';
+export * from './time-out'

@@ -3,4 +3,4 @@ interface LoaderOptions {
   texturePath?: string
 }
 
-export type { LoaderOptions }
+export type {LoaderOptions}

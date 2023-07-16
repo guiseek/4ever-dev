@@ -28,5 +28,5 @@ export const audioBarConfig = {
         sizes: '544x544',
       },
     ],
-  })
+  }),
 }

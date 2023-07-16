@@ -37,8 +37,6 @@ interface Angle {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GameUiMenuComponent implements OnInit {
-
-
   #angle = new BehaviorSubject<Angle>({dx: 0, dy: 0})
   angle$ = this.#angle.asObservable()
 

@@ -9,7 +9,7 @@ import {Input, Light, Loader} from '@4ever-dev/shared/util-three'
 import {Arachne, Bee, Cityscape} from '@4ever-dev/game/models-character'
 import {GameUiMenuComponent, GameUiMenuService} from '@4ever-dev/game/ui-menu'
 import {Clock, Scene} from 'three'
-import { Dialog } from '@angular/cdk/dialog'
+import {Dialog} from '@angular/cdk/dialog'
 
 @NgModule({
   declarations: [AppComponent, CanvasContainer, HomeContainer],
@@ -41,8 +41,8 @@ import { Dialog } from '@angular/cdk/dialog'
     },
     {
       provide: GameUiMenuService,
-      deps: [Dialog]
-    }
+      deps: [Dialog],
+    },
   ],
   bootstrap: [AppComponent],
 })

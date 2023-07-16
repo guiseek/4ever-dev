@@ -26,7 +26,7 @@ import {Clock, Scene} from 'three'
     },
     {
       provide: Spaceship,
-      deps: [Input, Loader]
+      deps: [Input, Loader],
     },
   ],
 })

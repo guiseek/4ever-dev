@@ -75,7 +75,6 @@ export class Spaceship extends Entity implements Updatable {
   }
 
   #handleInput() {
-
     if (this.input.direction.Some) {
       console.log(this.#currentRotation)
       console.log(this.rotation)
@@ -83,7 +82,7 @@ export class Spaceship extends Entity implements Updatable {
       /**
        * KeyS | ArrowDown: { _w: 1, _x: 0, _y: 0, _z: 0 }
        * KeyW | ArrowUp:
-      */
+       */
     }
 
     if (this.input.key.A) {
