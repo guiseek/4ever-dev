@@ -41,7 +41,8 @@
               "maximumError": "4kb"
             }
           ],
-          "outputHashing": "all"
+          "outputHashing": "all",
+          "baseHref": "4ever-dev/game/spaceship"
         },
         "development": {
           "buildOptimizer": false,
