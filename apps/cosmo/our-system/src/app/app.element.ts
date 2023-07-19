@@ -12,6 +12,9 @@ export class AppElement extends HTMLElement {
 
   #scene = new Scene()
 
+
+  #pause = false
+
   #sun = new Sun('sun', {
     path: sunPath,
     size: 50,
@@ -24,6 +27,14 @@ export class AppElement extends HTMLElement {
   })
 
   connectedCallback() {
+
+    onkeydown = (e) => {
+      console.log(e)
+      if (e.code === 'KeyP') {
+        this.#pause = !this.#pause
+      }
+    }
+
     this.#camera = new PerspectiveCamera(
       75,
       innerWidth / innerHeight,
@@ -50,6 +61,8 @@ export class AppElement extends HTMLElement {
   }
 
   #animation = () => {
+    if (this.#pause === true) return
+
     for (const planet of Object.values(this.#planets)) {
       planet.update()
     }
