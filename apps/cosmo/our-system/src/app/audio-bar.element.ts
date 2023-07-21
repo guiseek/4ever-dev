@@ -1,26 +1,36 @@
 import {runWhenActive, AudioAnalyser} from '@4ever-dev/game/util-audio'
 import {create} from '@4ever-dev/shared/util-dom'
 import {audioBarConfig} from './audio-bar.config'
+import {appControl} from './app.control'
 
 export class AudioBarElement extends HTMLElement {
+  audio = new Audio(audioBarConfig.src)
+
   connectedCallback() {
-    const audio = new Audio(audioBarConfig.src)
-    audio.controls = true
+    this.audio.controls = true
 
     runWhenActive('hasBeenActive', () => {
       const canvas = create('canvas', {width: 300, height: 42})
       const analyser = new AudioAnalyser({
+        audio: this.audio,
         color: '#111111',
         canvas,
-        audio,
       })
       analyser.initialize()
-      audio.before(canvas)
+      this.audio.before(canvas)
       this.#setSession()
-      audio.play()
+      this.audio.play()
     })
 
-    this.append(audio)
+    this.append(this.audio)
+
+    appControl.state$.subscribe((state) => {
+      if (state.KeyP) {
+        this.audio.pause()
+      } else {
+        this.audio.play()
+      }
+    })
 
     this.setStyles()
   }
@@ -43,3 +53,9 @@ export class AudioBarElement extends HTMLElement {
   }
 }
 customElements.define('audio-bar', AudioBarElement)
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'audio-bar': AudioBarElement
+  }
+}

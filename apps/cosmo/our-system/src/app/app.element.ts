@@ -1,9 +1,11 @@
 import {appConfig, sunPath, Loader, Planet, Sun} from '@4ever-dev/cosmo/models'
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js'
 import {Scene, WebGLRenderer, PerspectiveCamera} from 'three'
+import {appControl} from './app.control'
 import './app.element.scss'
 
 const loader = new Loader()
+appControl.listen()
 
 export class AppElement extends HTMLElement {
   #renderer!: WebGLRenderer
@@ -11,6 +13,8 @@ export class AppElement extends HTMLElement {
   #controls!: OrbitControls
 
   #scene = new Scene()
+
+  #pause = false
 
   #sun = new Sun('sun', {
     path: sunPath,
@@ -24,6 +28,10 @@ export class AppElement extends HTMLElement {
   })
 
   connectedCallback() {
+    appControl.state$.subscribe((state) => {
+      this.#pause = state.KeyP
+    })
+
     this.#camera = new PerspectiveCamera(
       75,
       innerWidth / innerHeight,
@@ -50,6 +58,8 @@ export class AppElement extends HTMLElement {
   }
 
   #animation = () => {
+    if (this.#pause === true) return
+
     for (const planet of Object.values(this.#planets)) {
       planet.update()
     }

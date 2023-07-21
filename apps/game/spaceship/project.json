@@ -10,7 +10,7 @@
       "executor": "@angular-devkit/build-angular:browser",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/apps/game/spaceship",
+        "outputPath": "dist/apps/4ever-dev/game/spaceship",
         "index": "apps/game/spaceship/src/index.html",
         "main": "apps/game/spaceship/src/main.ts",
         "polyfills": ["zone.js"],
@@ -42,7 +42,7 @@
             }
           ],
           "outputHashing": "all",
-          "baseHref": "4ever-dev/game/spaceship"
+          "baseHref": "/4ever-dev/game/spaceship/"
         },
         "development": {
           "buildOptimizer": false,

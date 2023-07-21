@@ -10,7 +10,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/cosmo/our-system"
+        "outputPath": "dist/apps/4ever-dev"
       },
       "configurations": {
         "development": {
@@ -18,7 +18,7 @@
         },
         "production": {
           "mode": "production",
-          "base": "4ever-dev/cosmo/our-system"
+          "base": "4ever-dev"
         }
       }
     },
