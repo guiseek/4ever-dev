@@ -1,9 +1,11 @@
 import {appConfig, sunPath, Loader, Planet, Sun} from '@4ever-dev/cosmo/models'
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js'
 import {Scene, WebGLRenderer, PerspectiveCamera} from 'three'
+import {appControl} from './app.control'
 import './app.element.scss'
 
 const loader = new Loader()
+appControl.listen()
 
 export class AppElement extends HTMLElement {
   #renderer!: WebGLRenderer
@@ -11,7 +13,6 @@ export class AppElement extends HTMLElement {
   #controls!: OrbitControls
 
   #scene = new Scene()
-
 
   #pause = false
 
@@ -27,13 +28,9 @@ export class AppElement extends HTMLElement {
   })
 
   connectedCallback() {
-
-    onkeydown = (e) => {
-      console.log(e)
-      if (e.code === 'KeyP') {
-        this.#pause = !this.#pause
-      }
-    }
+    appControl.state$.subscribe((state) => {
+      this.#pause = state.KeyP
+    })
 
     this.#camera = new PerspectiveCamera(
       75,

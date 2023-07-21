@@ -1,26 +1,28 @@
 import {AnimationAction, AnimationMixer, Quaternion, Vector3} from 'three'
 import {AudioControl} from '@4ever-dev/game/util-audio'
-import {Entity, Updatable} from '../../interfaces'
+import {Controllable, Entity, Updatable} from '../../interfaces'
 import {Input, Loader, isMobile} from '@4ever-dev/shared/util-three'
 
-export class Spaceship extends Entity implements Updatable {
+export class Spaceship extends Entity implements Updatable, Controllable {
   name = 'spaceship'
 
   order = 2
 
-  #speed = 2
-  #maxSpeed = 8
-  #minSpeed = 2
+  #speed = 1.2
+  #maxSpeed = 4
+  #minSpeed = 1
   #acceleration = 0.6
 
   #rotationAngle = 0.02
   #yaw = new Vector3(0, 1, 0)
-  #currentRotation = new Quaternion()
+  #rotation = new Quaternion()
 
   #audio = new AudioControl()
 
   #mixer?: AnimationMixer
   #actions: AnimationAction[] = []
+
+  actions = {}
 
   constructor(private input: Input, private loader: Loader) {
     super()
@@ -28,6 +30,8 @@ export class Spaceship extends Entity implements Updatable {
 
   initialize() {
     if (this.initialized) return
+
+    console.log('initialize')
 
     this.loader.load('spaceship.glb').then(({scene, animations}) => {
       this.add(scene)
@@ -43,12 +47,16 @@ export class Spaceship extends Entity implements Updatable {
       this.#activateActions(0.3)
 
       this.input.onTouched = () => {
-        this.#audio.connect(`assets/audio/engine-01.wav`)
+        if (!this.#audio.connected) {
+          this.#audio.connect(`assets/audio/engine-01.wav`)
+        }
       }
 
       this.input.onRotation = (deviceRotation) => {
-        this.#currentRotation.copy(deviceRotation)
+        this.#rotation.copy(deviceRotation)
       }
+
+      this.initialized = true
     })
   }
 
@@ -63,7 +71,9 @@ export class Spaceship extends Entity implements Updatable {
   update(timeStep: number, delta: number): void {
     this.#handleInput()
 
-    this.#toForward(this.#speed)
+    if (this.#audio.connected) {
+      this.#toForward(this.#speed)
+    }
 
     if (isMobile()) {
       this.#rotateSmoothly(Math.min(4 + delta, 1))
@@ -75,15 +85,15 @@ export class Spaceship extends Entity implements Updatable {
   }
 
   #handleInput() {
-    if (this.input.direction.Some) {
-      console.log(this.#currentRotation)
-      console.log(this.rotation)
+    // if (this.input.direction.Some) {
+    //   console.log(this.#currentRotation)
+    //   console.log(this.rotation)
 
-      /**
-       * KeyS | ArrowDown: { _w: 1, _x: 0, _y: 0, _z: 0 }
-       * KeyW | ArrowUp:
-       */
-    }
+    //   /**
+    //    * KeyS | ArrowDown: { _w: 1, _x: 0, _y: 0, _z: 0 }
+    //    * KeyW | ArrowUp:
+    //    */
+    // }
 
     if (this.input.key.A) {
       this.#toLeft(this.#rotationAngle)
@@ -148,19 +158,19 @@ export class Spaceship extends Entity implements Updatable {
 
   #toLeft(angle: number) {
     const quaternion = new Quaternion().setFromAxisAngle(this.#yaw, angle)
-    this.#currentRotation.multiply(quaternion)
+    this.#rotation.multiply(quaternion)
     this.rotateZ(-angle)
   }
 
   #toRight(angle: number) {
     const quaternion = new Quaternion().setFromAxisAngle(this.#yaw, -angle)
-    this.#currentRotation.multiply(quaternion)
+    this.#rotation.multiply(quaternion)
     this.rotateZ(angle)
   }
 
   #rotateSmoothly(alpha: number) {
     const quaternion = new Quaternion()
-    quaternion.slerpQuaternions(this.quaternion, this.#currentRotation, alpha)
+    quaternion.slerpQuaternions(this.quaternion, this.#rotation, alpha)
     this.quaternion.copy(quaternion)
   }
 

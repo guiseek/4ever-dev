@@ -69,13 +69,11 @@ export class Input {
     onkeyup = this.#onKeyUpEvent
 
     if (isMobile() && DeviceOrientationEvent) {
-      interceptEvent('deviceorientation', (event) => {
+      ondeviceorientation = (event) => {
         const [w, x, y, z] = getQuaternionFromOrientation(event)
-        this.deviceRotation.set(x, y, z, w)
-        for (const cb of this.#onRotation) {
-          cb(this.deviceRotation)
-        }
-      })
+        const rotation = this.deviceRotation.set(x, y, z, w)
+        for (const cb of this.#onRotation) cb(rotation)
+      }
     }
   }
 
@@ -113,10 +111,6 @@ export class Input {
 
   #onKeyDownEvent = ({code}: KeyboardEvent) => {
     if (this.#validateKeyCode(code)) {
-      if (!this.#touched) {
-        for (const fn of this.#onTouched) fn()
-      }
-
       this.#setCodeToKeyValue(code, 1)
 
       for (const fn of this.#onKeyDown) fn()
@@ -127,6 +121,7 @@ export class Input {
     if (this.#validateKeyCode(code)) {
       if (!this.#touched) {
         for (const fn of this.#onTouched) fn()
+        this.#touched = true
       }
 
       this.#setCodeToKeyValue(code, 0)
@@ -134,32 +129,6 @@ export class Input {
       for (const fn of this.#onKeyUp) fn()
     }
   }
-
-  #onDeviceOrientationEvent = (euler: Euler, scale: number) => {
-    return ({beta, alpha, gamma}: DeviceOrientationEvent) => {
-      const betaRad = (beta ?? 0) * (Math.PI / 180)
-      const alphaRad = (alpha ?? 0) * (Math.PI / 180)
-      const gammaRad = (gamma ?? 0) * (Math.PI / 180)
-
-      euler.set(betaRad, gammaRad, alphaRad)
-      this.deviceRotation.setFromEuler(euler)
-
-      for (const cb of this.#onRotation) {
-        cb(this.deviceRotation)
-      }
-    }
-  }
-  // #onDeviceOrientationEvent = (euler: Euler, scale: number) => {
-  //   return ({beta: x, alpha: z, gamma: y}: DeviceOrientationEvent) => {
-  //     euler.set(x ?? 0 * scale, y ?? 0 * scale, z ?? 0 + scale, 'XYZ')
-
-  //     this.deviceRotation.setFromEuler(euler)
-
-  //     for (const cb of this.#onRotation) {
-  //       cb(this.deviceRotation)
-  //     }
-  //   }
-  // }
 
   #setCodeToKeyValue(code: string, value: number) {
     this.key[this.#formatKey(code)] = value

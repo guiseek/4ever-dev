@@ -3,9 +3,9 @@ import {GameUiMenuService} from '@4ever-dev/game/ui-menu'
 import {Router} from '@angular/router'
 
 @Component({
+  template: ``,
   selector: 'game-home',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: ``,
   styles: [],
 })
 export class HomeContainer implements OnInit {

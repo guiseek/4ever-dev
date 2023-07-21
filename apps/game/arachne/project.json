@@ -10,7 +10,7 @@
       "executor": "@angular-devkit/build-angular:browser",
       "outputs": ["{options.outputPath}"],
       "options": {
-        "outputPath": "dist/apps/game/arachne",
+        "outputPath": "dist/apps/4ever-dev/game/arachne",
         "index": "apps/game/arachne/src/index.html",
         "main": "apps/game/arachne/src/main.ts",
         "polyfills": ["zone.js"],
@@ -42,7 +42,7 @@
             }
           ],
           "outputHashing": "all",
-          "baseHref": "4ever-dev/game/arachne"
+          "baseHref": "/4ever-dev/game/arachne/"
         },
         "development": {
           "buildOptimizer": false,

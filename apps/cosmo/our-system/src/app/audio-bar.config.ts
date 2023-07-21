@@ -6,6 +6,7 @@ import cover544x544 from '../../../../../assets/media/session/time-hans_zimmer-5
 
 export const audioBarConfig = {
   src,
+  paused: true,
   meta: new MediaMetadata({
     title: 'Time',
     album: 'Inception',
@@ -30,3 +31,5 @@ export const audioBarConfig = {
     ],
   }),
 }
+
+
