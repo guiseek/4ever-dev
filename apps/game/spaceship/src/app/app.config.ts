@@ -4,11 +4,11 @@ import {
   withEnabledBlockingInitialNavigation,
 } from '@angular/router'
 import {appRoutes} from './app.routes'
-import { AppProviders } from './app.providers'
+import {AppProviders} from './app.providers'
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(appRoutes, withEnabledBlockingInitialNavigation()),
-    AppProviders.forRoot()
+    AppProviders.forRoot(),
   ],
 }
