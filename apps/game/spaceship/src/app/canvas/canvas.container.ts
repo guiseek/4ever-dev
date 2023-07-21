@@ -17,7 +17,7 @@ import {take} from 'rxjs'
 @Component({
   template: ``,
   selector: 'game-canvas',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CanvasContainer implements OnInit {
   #scene = inject(Scene)
