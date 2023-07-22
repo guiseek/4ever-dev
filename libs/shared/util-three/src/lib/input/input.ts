@@ -73,6 +73,11 @@ export class Input {
         const [w, x, y, z] = getQuaternionFromOrientation(event)
         const rotation = this.deviceRotation.set(x, y, z, w)
         for (const cb of this.#onRotation) cb(rotation)
+
+        if (!this.#touched) {
+          for (const fn of this.#onTouched) fn()
+          this.#touched = true
+        }
       }
     }
   }
