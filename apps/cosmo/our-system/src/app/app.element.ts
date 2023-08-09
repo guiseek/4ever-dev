@@ -1,11 +1,32 @@
 import {appConfig, sunPath, Loader, Planet, Sun} from '@4ever-dev/cosmo/models'
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js'
-import {Scene, WebGLRenderer, PerspectiveCamera} from 'three'
+import {
+  Scene,
+  WebGLRenderer,
+  PerspectiveCamera,
+  CircleGeometry,
+  LineDashedMaterial,
+  EdgesGeometry,
+  LineSegments,
+} from 'three'
 import {appControl} from './app.control'
 import './app.element.scss'
 
 const loader = new Loader()
 appControl.listen()
+
+function createOrbit(radius: number) {
+  const geometry = new CircleGeometry(radius, radius / 5)
+  const edges = new EdgesGeometry(geometry)
+  const material = new LineDashedMaterial({
+    color: 0xffffff,
+    dashSize: radius / 20,
+    gapSize: radius / 10,
+    transparent: true,
+    opacity: 0.5,
+  })
+  return new LineSegments(edges, material).computeLineDistances()
+}
 
 export class AppElement extends HTMLElement {
   #renderer!: WebGLRenderer
@@ -18,7 +39,7 @@ export class AppElement extends HTMLElement {
 
   #sun = new Sun('sun', {
     path: sunPath,
-    size: 50,
+    size: 40,
   })
 
   #planets = Object.entries(appConfig).map(([name, options]) => {
@@ -32,12 +53,7 @@ export class AppElement extends HTMLElement {
       this.#pause = state.KeyP
     })
 
-    this.#camera = new PerspectiveCamera(
-      75,
-      innerWidth / innerHeight,
-      0.4,
-      10000
-    )
+    this.#camera = new PerspectiveCamera(65, innerWidth / innerHeight, 1, 10000)
     this.#camera.position.z = 1000
 
     this.#renderer = new WebGLRenderer({antialias: true})
@@ -50,8 +66,15 @@ export class AppElement extends HTMLElement {
 
     this.#scene.add(this.#sun, ...this.#planets)
 
+    const orbits = Object.values(appConfig).map(({radius}) =>
+      createOrbit(radius)
+    )
+
+    this.#scene.add(...orbits)
+
     this.#controls = new OrbitControls(this.#camera, this.#renderer.domElement)
     this.#controls.minDistance = 100
+    this.#controls.maxDistance = 400
     this.#controls.autoRotate = true
 
     onresize = this.#onResized

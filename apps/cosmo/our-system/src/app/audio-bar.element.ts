@@ -11,6 +11,8 @@ export class AudioBarElement extends HTMLElement {
 
     runWhenActive('hasBeenActive', () => {
       const canvas = create('canvas', {width: 300, height: 42})
+      console.log(canvas)
+
       const analyser = new AudioAnalyser({
         audio: this.audio,
         color: '#111111',
@@ -19,18 +21,18 @@ export class AudioBarElement extends HTMLElement {
       analyser.initialize()
       this.audio.before(canvas)
       this.#setSession()
-      this.audio.play()
+      // this.audio.play()
+
+      appControl.state$.subscribe((state) => {
+        if (state.KeyP) {
+          this.audio.pause()
+        } else {
+          this.audio.play()
+        }
+      })
     })
 
     this.append(this.audio)
-
-    appControl.state$.subscribe((state) => {
-      if (state.KeyP) {
-        this.audio.pause()
-      } else {
-        this.audio.play()
-      }
-    })
 
     this.setStyles()
   }
